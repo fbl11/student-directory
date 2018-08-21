@@ -1,15 +1,32 @@
+# Exercise 5
+# Our code only works with the student name and cohort. Add more information:
+# hobbies, country of birth, height, etc.
+
 def input_students
   students = []
-  puts 'Please enter the names of the students'
-  puts 'To finish, just hit return twice'
-  name = gets.chomp
-  
+  name = "placeholder"
+
   while !name.empty? do
-    students << {name: name, cohort: :november}
-    puts "Now we have #{students.count} students"
-    name = gets.chomp
+    puts 'Please enter the name of the student'
+    puts 'To finish, just hit return'
+    name = gets.chomp.capitalize
+
+    break if name.empty? == true
+
+    # not used until Exercise 7
+    # puts 'Please enter the student cohort'
+    # cohort = gets.chomp.to_sym
+    
+    puts 'Please enter the student\'s hobby'
+    hobby = gets.chomp.capitalize
+
+    puts 'Please enter the student\'s hight (in cm)'
+    height = gets.chomp
+    
+    students << {name: name, cohort: :november, hobby: hobby, height: height}
+    puts "Now we have #{students.count} students\n\n"
   end
-  students
+    students
 end
 
 def print_header
@@ -17,16 +34,12 @@ def print_header
   puts '-------------' 
 end
 
-# Exercise 4
-# Rewrite the each() method that prints all students using while or until control flow methods (Loops).
-def print_names(student_information)
-    counter = 0
-    
-    while counter < student_information.length do
-      puts "#{student_information[counter][:name]} (#{student_information[counter][:cohort]} cohort)"
-      counter += 1
+def print_names(names)
+    names.each do |student|
+      puts "#{student[:name]} (#{student[:cohort]} cohort)"
+      puts "Hobby: #{student[:hobby]}"
+      puts "Height: #{student[:height]}\n\n"
     end
-    
 end
 
 def print_footer(number_of)
