@@ -18,9 +18,11 @@ def print_header
 end
 
 def print_names(names)
-    names.each.with_index do |student, index|
-      # adds number before each student name - Exercise 1
-      puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
+    names.each do |student|
+      # prints only students whose names begin with given letter - Exercise 2
+      if student[:name].downcase.start_with?("d")
+        puts "#{student[:name]} (#{student[:cohort]} cohort)"
+      end
     end
 end
 
