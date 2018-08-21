@@ -17,14 +17,16 @@ def print_header
   puts '-------------' 
 end
 
-# Exercise 3
-# Modify your program to only print the students whose name is shorter than 12 characters.
-def print_names(names)
-    names.each do |student|
-      if student[:name].length < 12
-        puts "#{student[:name]} (#{student[:cohort]} cohort)"
-      end 
+# Exercise 4
+# Rewrite the each() method that prints all students using while or until control flow methods (Loops).
+def print_names(student_information)
+    counter = 0
+    
+    while counter < student_information.length do
+      puts "#{student_information[counter][:name]} (#{student_information[counter][:cohort]} cohort)"
+      counter += 1
     end
+    
 end
 
 def print_footer(number_of)
