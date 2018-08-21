@@ -17,12 +17,13 @@ def print_header
   puts '-------------' 
 end
 
+# Exercise 3
+# Modify your program to only print the students whose name is shorter than 12 characters.
 def print_names(names)
     names.each do |student|
-      # prints only students whose names begin with given letter - Exercise 2
-      if student[:name].downcase.start_with?("d")
+      if student[:name].length < 12
         puts "#{student[:name]} (#{student[:cohort]} cohort)"
-      end
+      end 
     end
 end
 
