@@ -1,51 +1,61 @@
-# Exercise7
-# In the input_students method the cohort value is hard-coded.
-# What if the user makes a typo? Answer: Downcase/upcase/capitalize can ensure correct capitalisation
-# other typos would need to be checked for case by case.  For cohort, input would be expected to be
-# one of twelve months.  Verification could be done via dictionary lookup that compares user input with 
-# values in dictionary and sets to closest match (matches first three letters for example)
+# Exercise8
 
-def input_students
-  students = []
-  name = "placeholder"
-
-  while name != "exit" do
-    puts 'Please enter the name of the student'
-    puts 'To finish, type Exit'
-    name = gets.chomp.capitalize
-
-    break if name == "Exit"
-
-# How can you ask for both the name and the cohort? 
-    puts 'Please enter the student cohort'
-# The input will be given to you as a string? How will you convert it to a symbol?
-    cohort = gets.chomp.to_sym
-    if cohort.empty?
-      cohort = :default
-    end
-    
-    students << {name: name, cohort: cohort}
-    puts "Now we have #{students.count} students\n\n"
-  end
-    students
-end
+students = [
+    {name: 'Dr. Hannibal Lecter', cohort: :august},
+    {name: 'Darth Vader', cohort: :november},
+    {name: 'Nurse Ratched', cohort: :august},
+    {name: 'Michael Corleone', cohort: :november},
+    {name: 'Alex DeLarge', cohort: :april},
+    {name: 'The Wicked Witch of the West', cohort: :november},
+    {name: 'Terminator', cohort: :november},
+    {name: 'Freddy Krueger', cohort: :november},
+    {name: 'The Joker', cohort: :november},
+    {name: 'Joffrey Baratheon', cohort: :april},
+    {name: 'Norman Bates', cohort: :november}
+]
+# not used for this exercise
+# def input_students
+#   students = []
+#   puts 'Please enter the names of the students'
+#   puts 'To finish, just hit return twice'
+#   name = gets.chomp
+  
+#   while !name.empty? do
+#     students << {name: name, cohort: :november}
+#     puts "Now we have #{students.count} students"
+#     name = gets.chomp
+#   end
+#   students
+# end
 
 def print_header
   puts 'The students of Villains Academy'
   puts '-------------' 
 end
 
+# change the way the users are displayed: print them grouped by cohorts. 
 def print_names(names)
-  names.each do |student|
-    puts "#{student[:name]} (#{student[:cohort]} cohort)"
+# collects all unique existing cohort values
+  cohort_values = names.map {|student_entry| student_entry.values[1]}.uniq
+  puts cohort_values
+
+# iterates over all unique months collected in 'cohort_values'
+  cohort_values.each do |month|
+# iterates over all students recorded in 'students' array
+    names.each do |student|
+# compares current cohort_value to current student's cohort value and if equal puts full student entry
+      if student[:cohort] == month
+        puts "#{student[:name]} (#{student[:cohort]} cohort)"
+      end 
+    end
   end
+  
 end
 
 def print_footer(number_of)
-    puts "Overall, we have #{number_of.count} great students"
+  puts "Overall, we have #{number_of.count} great students"
 end
 
-students = input_students
 print_header
 print_names(students)
 print_footer(students)
