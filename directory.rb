@@ -1,3 +1,8 @@
+# Exercise 10
+# We've been using the chomp() method to get rid of the last return character.
+# Find another method among those provided by the String class that could be used for the same purpose (although it will require passing some arguments).
+# Answer: Using gets.delete("\n") in this example, but could use gets.rstrip instead
+
 # students = [
 #     {name: 'Dr. Hannibal Lecter', cohort: :august},
 #     {name: 'Darth Vader', cohort: :november},
@@ -36,13 +41,13 @@ def input_students
   while !name.empty? do
     puts 'Please enter the name of the student'
     puts 'To finish, just hit return'
-    name = gets.chomp.capitalize
+    name = gets.delete("\n").capitalize
 
     break if name.empty?
 
     loop do
       puts 'Please enter the student cohort'
-      cohort = gets.chomp.downcase.to_sym
+      cohort = gets.delete("\n").downcase.to_sym
         if cohort.empty?
           cohort = :default_month
         end
@@ -51,7 +56,7 @@ def input_students
    
     loop do
       puts 'Please enter the student\'s age'
-      age = gets.chomp
+      age = gets.delete("\n")
 
     break if validate_age(age) == :valid
 end
