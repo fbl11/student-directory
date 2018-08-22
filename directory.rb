@@ -1,7 +1,3 @@
-# Exercise9
-# Right now if we have only one student, the user will see a message "Now we have 1 students", whereas it should be "Now we have 1 student".
-# How can you fix it so that it used singular form when appropriate and plural form otherwise?
-
 # students = [
 #     {name: 'Dr. Hannibal Lecter', cohort: :august},
 #     {name: 'Darth Vader', cohort: :november},
@@ -16,20 +12,55 @@
 #     {name: 'Norman Bates', cohort: :november}
 # ]
 
+def validate_cohort(month)
+  months = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december, :default_month]
+  
+  if !months.include?(month)
+    puts "Invalid value - please enter a month"
+    :invalid
+  else
+    :valid
+  end
+end
+
+def validate_age(number)
+  (number.to_r > 0 && number.to_r <= 150) ? :valid : :invalid
+end
+
 def input_students
   students = []
-  puts 'Please enter the names of the students'
-  puts 'To finish, just hit return twice'
-  name = gets.chomp
-  
+  name = "placeholder"
+  cohort = :default_month
+  age = 0
+
   while !name.empty? do
-    students << {name: name, cohort: :november}
-# How can you fix it so that it used singular form when appropriate and plural form otherwise?
+    puts 'Please enter the name of the student'
+    puts 'To finish, just hit return'
+    name = gets.chomp.capitalize
+
+    break if name.empty?
+
+    loop do
+      puts 'Please enter the student cohort'
+      cohort = gets.chomp.downcase.to_sym
+        if cohort.empty?
+          cohort = :default_month
+        end
+      break if validate_cohort(cohort) == :valid
+    end
+   
+    loop do
+      puts 'Please enter the student\'s age'
+      age = gets.chomp
+
+    break if validate_age(age) == :valid
+end
+   
+    students << {name: name, cohort: cohort, age: age}
     students.length == 1 ? (puts "Now we have #{students.count} student")
-    : (puts "Now we have #{students.count} students")
-    name = gets.chomp
+    : (puts "Now we have #{students.count} students\n\n")
   end
-  students
+    students
 end
 
 def print_header
@@ -38,13 +69,23 @@ def print_header
 end
 
 def print_names(names)
-    names.each do |student|
-      puts "#{student[:name]} (#{student[:cohort]} cohort)"
+  cohort_values = names.map {|student_entry| student_entry.values[1]}.uniq
+  accumulator = 1
+
+  cohort_values.each do |month|
+    names.each.with_index do |student, index|
+      if student[:cohort] == month
+        puts "#{accumulator}. #{student[:name]}, age: #{student[:age]} (#{student[:cohort]} cohort)"
+        accumulator += 1
+      end 
     end
+  end
 end
 
 def print_footer(number_of)
-    puts "Overall, we have #{number_of.count} great students"
+    number_of.length == 1 ?
+    (puts "Overall, we have #{number_of.count} great student")
+    : (puts "Overall, we have #{number_of.count} great students")
 end
 
 students = input_students
