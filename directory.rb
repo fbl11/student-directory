@@ -1,6 +1,16 @@
-# Exercise 12
-# What happens if the user doesn't enter any students? It will try to print an empty list.
-# How can you use an if statement (Control Flow) to only print the list if there is at least one student in there?
+# students = [
+#     {name: 'Dr. Hannibal Lecter', cohort: :august},
+#     {name: 'Darth Vader', cohort: :november},
+#     {name: 'Nurse Ratched', cohort: :august},
+#     {name: 'Michael Corleone', cohort: :november},
+#     {name: 'Alex DeLarge', cohort: :april},
+#     {name: 'The Wicked Witch of the West', cohort: :november},
+#     {name: 'Terminator', cohort: :november},
+#     {name: 'Freddy Krueger', cohort: :november},
+#     {name: 'The Joker', cohort: :november},
+#     {name: 'Joffrey Baratheon', cohort: :april},
+#     {name: 'Norman Bates', cohort: :november}
+# ]
 
 # students = [
 #     {name: 'Dr. Hannibal Lecter', cohort: :august},
@@ -19,16 +29,38 @@
 def validate_cohort(month)
   months = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december, :default_month]
   
-  if !months.include?(month)
-    puts "Invalid value - please enter a month"
-    :invalid
-  else
-    :valid
-  end
+  !(months.include?(month)) ? :invalid : :valid
 end
 
 def validate_age(number)
   (number.to_r > 0 && number.to_r <= 150) ? :valid : :invalid
+end
+
+def interactive_menu
+  students = []
+  
+  loop do
+    # 1. print the menu and ask the user what to do
+    puts 'What would you like to do?'
+    puts '1. Input students'
+    puts '2. Show students'
+    puts '9. Exit'
+    # 2. read the input and save it into a variable
+    selection = gets.chomp
+    # 3. do what the user has asked
+    case selection
+    when "1"
+      students = input_students # input the students
+    when "2"
+      print_header(students)# show students
+      print_names(students)
+      print_footer(students)
+    when "9"
+      exit # terminates programme
+    else
+      puts 'I do not know what you mean, please try again'
+    end
+  end
 end
 
 def input_students
@@ -96,7 +128,4 @@ def print_footer(number_of)
     : (puts "Overall, we have #{number_of.count} great students")
 end
 
-students = input_students
-print_header(students)
-print_names(students)
-print_footer(students)
+interactive_menu
