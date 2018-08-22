@@ -1,7 +1,6 @@
-# Exercise 10
-# We've been using the chomp() method to get rid of the last return character.
-# Find another method among those provided by the String class that could be used for the same purpose (although it will require passing some arguments).
-# Answer: Using gets.delete("\n") in this example, but could use gets.rstrip instead
+# Exercise 12
+# What happens if the user doesn't enter any students? It will try to print an empty list.
+# How can you use an if statement (Control Flow) to only print the list if there is at least one student in there?
 
 # students = [
 #     {name: 'Dr. Hannibal Lecter', cohort: :august},
@@ -41,13 +40,13 @@ def input_students
   while !name.empty? do
     puts 'Please enter the name of the student'
     puts 'To finish, just hit return'
-    name = gets.delete("\n").capitalize
+    name = gets.chomp.capitalize
 
     break if name.empty?
 
     loop do
       puts 'Please enter the student cohort'
-      cohort = gets.delete("\n").downcase.to_sym
+      cohort = gets.chomp.downcase.to_sym
         if cohort.empty?
           cohort = :default_month
         end
@@ -56,7 +55,7 @@ def input_students
    
     loop do
       puts 'Please enter the student\'s age'
-      age = gets.delete("\n")
+      age = gets.chomp
 
     break if validate_age(age) == :valid
 end
@@ -68,21 +67,25 @@ end
     students
 end
 
-def print_header
-  puts 'The students of Villains Academy'
-  puts '-------------' 
+def print_header(names)
+  if names.length >= 1 
+    puts 'The students of Villains Academy'
+    puts '-------------' 
+  end
 end
 
 def print_names(names)
-  cohort_values = names.map {|student_entry| student_entry.values[1]}.uniq
-  accumulator = 1
+  if names.length >= 1
+    cohort_values = names.map {|student_entry| student_entry.values[1]}.uniq
+    accumulator = 1
 
-  cohort_values.each do |month|
-    names.each.with_index do |student, index|
-      if student[:cohort] == month
-        puts "#{accumulator}. #{student[:name]}, age: #{student[:age]} (#{student[:cohort]} cohort)"
-        accumulator += 1
-      end 
+    cohort_values.each do |month|
+      names.each.with_index do |student, index|
+        if student[:cohort] == month
+          puts "#{accumulator}. #{student[:name]}, age: #{student[:age]} (#{student[:cohort]} cohort)"
+          accumulator += 1
+        end 
+      end
     end
   end
 end
@@ -94,6 +97,6 @@ def print_footer(number_of)
 end
 
 students = input_students
-print_header
+print_header(students)
 print_names(students)
 print_footer(students)
