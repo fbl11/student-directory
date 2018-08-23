@@ -26,6 +26,8 @@
 #     {name: 'Norman Bates', cohort: :november}
 # ]
 
+@students = []
+
 def validate_cohort(month)
   months = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december, :default_month]
   
@@ -37,34 +39,39 @@ def validate_age(number)
 end
 
 def interactive_menu
-  students = []
-  
+
   loop do
-    # 1. print the menu and ask the user what to do
-    puts 'What would you like to do?'
-    puts '1. Input students'
-    puts '2. Show students'
-    puts '9. Exit'
-    # 2. read the input and save it into a variable
-    selection = gets.chomp
-    # 3. do what the user has asked
-    case selection
-    when "1"
-      students = input_students # input the students
-    when "2"
-      print_header(students)# show students
-      print_names(students)
-      print_footer(students)
-    when "9"
-      exit # terminates programme
-    else
-      puts 'I do not know what you mean, please try again'
-    end
+    print_menu
+    process(gets.chomp)
   end
 end
 
+def print_menu
+  puts '1. Input students'
+  puts '2. Show students'
+  puts '9. Exit'
+end
+
+def process(selection)
+  case selection
+  when "1"
+    input_students
+  when "2"
+    show_students
+  when "9"
+    exit
+  else
+    puts "I don't know this option. Please try again."
+  end
+end
+
+def show_students
+  print_header
+  print_students_list
+  print_footer
+end
+
 def input_students
-  students = []
   name = "placeholder"
   cohort = :default_month
   age = 0
@@ -92,27 +99,27 @@ def input_students
     break if validate_age(age) == :valid
 end
    
-    students << {name: name, cohort: cohort, age: age}
-    students.length == 1 ? (puts "Now we have #{students.count} student")
-    : (puts "Now we have #{students.count} students\n\n")
+    @students << {name: name, cohort: cohort, age: age}
+    @students.length == 1 ? (puts "Now we have #{@students.count} student")
+    : (puts "Now we have #{@students.count} students\n\n")
   end
-    students
+    @students
 end
 
-def print_header(names)
-  if names.length >= 1 
+def print_header
+  if @students.length >= 1 
     puts 'The students of Villains Academy'
     puts '-------------' 
   end
 end
 
-def print_names(names)
-  if names.length >= 1
-    cohort_values = names.map {|student_entry| student_entry.values[1]}.uniq
+def print_students_list
+  if @students.length >= 1
+    cohort_values = @students.map {|student_entry| student_entry.values[1]}.uniq
     accumulator = 1
 
     cohort_values.each do |month|
-      names.each.with_index do |student, index|
+      @students.each.with_index do |student, index|
         if student[:cohort] == month
           puts "#{accumulator}. #{student[:name]}, age: #{student[:age]} (#{student[:cohort]} cohort)"
           accumulator += 1
@@ -122,10 +129,10 @@ def print_names(names)
   end
 end
 
-def print_footer(number_of)
-    number_of.length == 1 ?
-    (puts "Overall, we have #{number_of.count} great student")
-    : (puts "Overall, we have #{number_of.count} great students")
+def print_footer
+    @students == 1 ?
+    (puts "Overall, we have #{@students.count} great student")
+    : (puts "Overall, we have #{@students.count} great students")
 end
 
 interactive_menu
