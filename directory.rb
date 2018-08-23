@@ -1,33 +1,3 @@
-# students = [
-#     {name: 'Dr. Hannibal Lecter', cohort: :august},
-#     {name: 'Darth Vader', cohort: :november},
-#     {name: 'Nurse Ratched', cohort: :august},
-#     {name: 'Michael Corleone', cohort: :november},
-#     {name: 'Alex DeLarge', cohort: :april},
-#     {name: 'The Wicked Witch of the West', cohort: :november},
-#     {name: 'Terminator', cohort: :november},
-#     {name: 'Freddy Krueger', cohort: :november},
-#     {name: 'The Joker', cohort: :november},
-#     {name: 'Joffrey Baratheon', cohort: :april},
-#     {name: 'Norman Bates', cohort: :november}
-# ]
-
-# students = [
-#     {name: 'Dr. Hannibal Lecter', cohort: :august},
-#     {name: 'Darth Vader', cohort: :november},
-#     {name: 'Nurse Ratched', cohort: :august},
-#     {name: 'Michael Corleone', cohort: :november},
-#     {name: 'Alex DeLarge', cohort: :april},
-#     {name: 'The Wicked Witch of the West', cohort: :november},
-#     {name: 'Terminator', cohort: :november},
-#     {name: 'Freddy Krueger', cohort: :november},
-#     {name: 'The Joker', cohort: :november},
-#     {name: 'Joffrey Baratheon', cohort: :april},
-#     {name: 'Norman Bates', cohort: :november}
-# ]
-
-@students = []
-
 def validate_cohort(month)
   months = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december, :default_month]
   
@@ -39,7 +9,6 @@ def validate_age(number)
 end
 
 def interactive_menu
-
   loop do
     print_menu
     process(gets.chomp)
@@ -49,6 +18,7 @@ end
 def print_menu
   puts '1. Input students'
   puts '2. Show students'
+  puts '3. Save students'
   puts '9. Exit'
 end
 
@@ -58,6 +28,8 @@ def process(selection)
     input_students
   when "2"
     show_students
+  when "3"
+    save_students
   when "9"
     exit
   else
@@ -70,6 +42,8 @@ def show_students
   print_students_list
   print_footer
 end
+
+@students = []
 
 def input_students
   name = "placeholder"
@@ -104,6 +78,18 @@ end
     : (puts "Now we have #{@students.count} students\n\n")
   end
     @students
+end
+
+def save_students
+  # open the file for writing
+  saved_students = File.open('students.csv', 'w')
+  # iterate over the array of students
+  @students.each do |student|
+    student_data = [student[:name], student[:cohort], student[:age]]
+    csv_line = student_data.join(',')
+    saved_students.puts csv_line
+  end
+  saved_students.close
 end
 
 def print_header
