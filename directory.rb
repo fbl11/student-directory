@@ -1,11 +1,6 @@
-def load_students(filename = 'students.csv') # takes file name as an argument, providing a default name if none is given
-  file = File.open(filename, 'r') # opens file with name from argument (default or provided by user)
-  file.readlines.each do |line|
-    name, cohort, age = line.chop.split(',')
-    @students << {name: name, cohort: cohort.to_sym, age: age}
-  end
-  file.close
-end
+# After we added the code to load the students from file, we ended up with adding the students to @students in two places.
+# The lines in load_students() and input_students() are almost the same. This violates the DRY (Don't Repeat Yourself) principle.
+# How can you extract them into a method to fix this problem?
 
 def try_load_students
   filename = ARGV.first # first argument from the command line
@@ -68,36 +63,50 @@ def show_students
 end
 
 @students = []
+@name = "placeholder"
+@cohort = :default_month
+@age = 0
+
+def load_students(filename = 'students.csv') # takes file name as an argument, providing a default name if none is given
+  file = File.open(filename, 'r') # opens file with name from argument (default or provided by user)
+  file.readlines.each do |line|
+    @name, @cohort, @age = line.chop.split(',')
+    create_student_list
+  end
+  file.close
+end
+
+def create_student_list
+  @students << {name: @name, cohort: @cohort.to_sym, age: @age}
+end
 
 def input_students
-  name = "placeholder"
-  cohort = :default_month
-  age = 0
 
-  while !name.empty? do
+
+  while !@name.empty? do
     puts 'Please enter the name of the student'
     puts 'To finish, just hit return'
-    name = STDIN.gets.chomp.capitalize
+    @name = STDIN.gets.chomp.capitalize
 
-    break if name.empty?
+    break if @name.empty?
 
     loop do
       puts 'Please enter the student cohort'
-      cohort = STDIN.gets.chomp.downcase.to_sym
-        if cohort.empty?
-          cohort = :default_month
+      @cohort = STDIN.gets.chomp.downcase.to_sym
+        if @cohort.empty?
+          @cohort = :default_month
         end
-      break if validate_cohort(cohort) == :valid
+      break if validate_cohort(@cohort) == :valid
     end
    
     loop do
       puts 'Please enter the student\'s age'
-      age = STDIN.gets.chomp
+      @age = STDIN.gets.chomp
 
-    break if validate_age(age) == :valid
-end
+    break if validate_age(@age) == :valid
+    end
    
-    @students << {name: name, cohort: cohort, age: age}
+    create_student_list #@students << {name: name, cohort: cohort, age: age}
     @students.length == 1 ? (puts "Now we have #{@students.count} student")
     : (puts "Now we have #{@students.count} students\n\n")
   end
