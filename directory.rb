@@ -1,3 +1,12 @@
+def load_students
+  saved_students = File.open('students.csv', 'r')
+  saved_students.readlines.each do |line|
+    name, cohort, age = line.chop.split(',')
+    @students << {name: name, cohort: cohort.to_sym, age: age}
+  end
+  saved_students.close
+end
+
 def validate_cohort(month)
   months = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december, :default_month]
   
@@ -18,7 +27,8 @@ end
 def print_menu
   puts '1. Input students'
   puts '2. Show students'
-  puts '3. Save students'
+  puts '3. Save students to students.csv'
+  puts '4. Load students from students.csv'
   puts '9. Exit'
 end
 
@@ -30,6 +40,8 @@ def process(selection)
     show_students
   when "3"
     save_students
+  when "4"
+    load_students
   when "9"
     exit
   else
@@ -81,9 +93,7 @@ end
 end
 
 def save_students
-  # open the file for writing
   saved_students = File.open('students.csv', 'w')
-  # iterate over the array of students
   @students.each do |student|
     student_data = [student[:name], student[:cohort], student[:age]]
     csv_line = student_data.join(',')
