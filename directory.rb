@@ -1,10 +1,22 @@
-def load_students
-  saved_students = File.open('students.csv', 'r')
-  saved_students.readlines.each do |line|
+def load_students(filename = 'students.csv') # takes file name as an argument, providing a default name if none is given
+  file = File.open(filename, 'r') # opens file with name from argument (default or provided by user)
+  file.readlines.each do |line|
     name, cohort, age = line.chop.split(',')
     @students << {name: name, cohort: cohort.to_sym, age: age}
   end
-  saved_students.close
+  file.close
+end
+
+def try_load_students
+  filename = ARGV.first # first argument from the command line
+  return if filename.nil? # exit method if no filename is provided
+  if File.exists?(filename) # if a file with the given filename exists
+    load_students(filename)
+    puts "Loaded #{@students.count} from #{filename}"
+  else # if the given filename doesn't exist
+    puts "Sorry, #{filename} doesn't exist"
+    exit
+  end
 end
 
 def validate_cohort(month)
@@ -20,7 +32,7 @@ end
 def interactive_menu
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
@@ -65,13 +77,13 @@ def input_students
   while !name.empty? do
     puts 'Please enter the name of the student'
     puts 'To finish, just hit return'
-    name = gets.chomp.capitalize
+    name = STDIN.gets.chomp.capitalize
 
     break if name.empty?
 
     loop do
       puts 'Please enter the student cohort'
-      cohort = gets.chomp.downcase.to_sym
+      cohort = STDIN.gets.chomp.downcase.to_sym
         if cohort.empty?
           cohort = :default_month
         end
@@ -80,7 +92,7 @@ def input_students
    
     loop do
       puts 'Please enter the student\'s age'
-      age = gets.chomp
+      age = STDIN.gets.chomp
 
     break if validate_age(age) == :valid
 end
@@ -131,4 +143,5 @@ def print_footer
     : (puts "Overall, we have #{@students.count} great students")
 end
 
+try_load_students
 interactive_menu
