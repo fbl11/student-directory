@@ -1,11 +1,9 @@
-# How could you make the program load students.csv by default if no file is given on startup?
-# Which methods would you need to change?
-
 # shared variables
 @students = []
 @name = "placeholder"
 @cohort = :default_month
 @age = 0
+@sorted_by_cohort = []
 
 # saving and loading
 def try_load_students
@@ -57,32 +55,32 @@ def print_menu
 end
 
 def print_header
-  if @students.length >= 1 
+  if @students.length > 0 
     puts 'The students of Villains Academy'
     puts '-------------' 
   end
 end
 
 def print_footer
-    @students == 1 ?
-    (puts "Overall, we have #{@students.count} great student")
-    : (puts "Overall, we have #{@students.count} great students")
+    @students.length == 1 ?
+    (puts "Overall, we have #{@students.count} great student\n\n")
+    : (puts "Overall, we have #{@students.count} great students\n\n")
 end
 
 def print_students_list
-  if @students.length >= 1
-    cohort_values = @students.map {|student_entry| student_entry.values[1]}.uniq
-    accumulator = 1
-
-    cohort_values.each do |month|
-      @students.each.with_index do |student, index|
-        if student[:cohort] == month
-          puts "#{accumulator}. #{student[:name]}, age: #{student[:age]} (#{student[:cohort]} cohort)"
-          accumulator += 1
-        end 
-      end
-    end
+  if @students.length > 2
+    sort_students_by_cohort
   end
+  @students.length > 2 ? 
+  @print_body.call(@sorted_by_cohort)
+  : @print_body.call(@students)
+  
+end
+
+def print_current_number
+  @students.length == 1 ?
+  (puts "Now we have #{@students.count} student\n\n")
+  : (puts "Now we have #{@students.count} students\n\n")
 end
 
 def show_students
@@ -113,6 +111,8 @@ def create_student_list
   @students << {name: @name, cohort: @cohort.to_sym, age: @age}
 end
 
+@print_body = -> (list) { list.each.with_index { |student, index| puts "#{index + 1}. #{student[:name]}, age: #{student[:age]} (#{student[:cohort]} cohort)" }}
+
 def input_students
   while !@name.empty? do
     puts 'Please enter the name of the student'
@@ -137,11 +137,22 @@ def input_students
     break if validate_age(@age) == :valid
     end
    
-    create_student_list #@students << {name: name, cohort: cohort, age: age}
-    @students.length == 1 ? (puts "Now we have #{@students.count} student")
-    : (puts "Now we have #{@students.count} students\n\n")
+    create_student_list
+    print_current_number
   end
     @students
+end
+
+def sort_students_by_cohort
+  cohort_values = @students.map {|student_entry| student_entry.values[1]}.uniq
+
+  cohort_values.each do |month|
+    @students.each.with_index do |student, index|
+      if student[:cohort] == month
+        @sorted_by_cohort << {name: student[:name], age: student[:age], cohort: student[:cohort]}
+      end 
+    end
+  end
 end
 
 # validation
