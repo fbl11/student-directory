@@ -1,8 +1,28 @@
+class Student
+
+  attr_reader :name, :cohort, :age
+
+  def initialize(name, cohort, age)
+    @name = name
+    @cohort = cohort
+    @age = age
+  end
+
+  def description
+    "#{name}, age: #{age} (#{cohort} cohort)"
+  end
+
+  def csv_data
+    "#{name},#{age},#{cohort}"
+  end
+
+  # def to_s
+  #   description
+  # end
+end
+
 # shared variables
 @students = []
-@name = "placeholder"
-@cohort = :default_month
-@age = 0
 
 # saving and loading
 def try_load_students
@@ -11,7 +31,6 @@ def try_load_students
     load_students
   elsif File.exists?(filename)
     load_students(filename)
-    puts "Loaded #{@students.count} from #{filename}"
   else
     puts "Sorry, #{filename} doesn't exist"
     exit
@@ -25,19 +44,17 @@ def load_students(filename = 'students.csv') # takes file name as an argument, p
     add_student_to_list(name, cohort, age)
   end
   file.close
+  puts "Loaded #{@students.count} students from #{filename}"
 end
 
 def save_students
   saved_students = File.open('students.csv', 'w')
   @students.each do |student|
-    student_data = [student[:name], student[:cohort], student[:age]]
-    csv_line = student_data.join(',')
-    saved_students.puts csv_line
+    saved_students.puts student.csv_data
   end
   saved_students.close
 end
 
-# user display
 def interactive_menu
   loop do
     print_menu
@@ -45,6 +62,7 @@ def interactive_menu
   end
 end
 
+# printing
 def print_menu
   puts '1. Input students'
   puts '2. Show students'
@@ -66,20 +84,16 @@ def print_footer
     : (puts "Overall, we have #{@students.count} great students\n\n")
 end
 
-def print_students_list
-  print_body(sort_students_by_cohort)
-end
-
 def print_current_number
   @students.length == 1 ?
   (puts "Now we have #{@students.count} student\n\n")
   : (puts "Now we have #{@students.count} students\n\n")
 end
 
-def show_students
-  print_header
-  print_students_list
-  print_footer
+def print_body(list)
+  list.each.with_index do |student, index|
+    puts "#{index + 1}. #{student.description}"
+  end
 end
 
 # actions
@@ -100,50 +114,54 @@ def process(selection)
   end
 end
 
-def add_student_to_list(name, cohort='default_month', age)
-  @students << {name: name, cohort: cohort.to_sym, age: age}
-end
-
-def print_body(list)
-  list.each.with_index do |student, index|
-    puts "#{index + 1}. #{student[:name]}, age: #{student[:age]} (#{student[:cohort]} cohort)"
-  end
-end
-
 def input_students
-  while !@name.empty? do
+  name = 'init'
+  cohort = ''
+  age = 0
+
+  while !name.empty? do
     puts 'Please enter the name of the student'
     puts 'To finish, just hit return'
-    @name = STDIN.gets.chomp.capitalize
+    name = STDIN.gets.chomp.capitalize
 
-    break if @name.empty?
+    break if name.empty?
 
     loop do
       puts 'Please enter the student cohort'
-      @cohort = STDIN.gets.chomp.downcase.to_sym
-        if @cohort.empty?
-          @cohort = :default_month
+      cohort = STDIN.gets.chomp.downcase.to_sym
+        if cohort.empty?
+          cohort = :default_month
         end
-      break if validate_cohort(@cohort) == :valid
+      break if validate_cohort(cohort) == :valid
     end
 
     loop do
       puts 'Please enter the student\'s age'
-      @age = STDIN.gets.chomp
+      age = STDIN.gets.chomp
 
-    break if validate_age(@age) == :valid
+    break if validate_age(age) == :valid
     end
 
-    add_student_to_list(@name, @cohort, @age)
+    add_student_to_list(name, cohort, age)
     print_current_number
   end
     @students
 end
 
+def add_student_to_list(name, cohort=:default_month, age)
+  @students << Student.new(name, cohort.to_sym, age)
+end
+
 def sort_students_by_cohort
   @students.sort_by do |student|
-    student[:cohort]
+    student.cohort
   end
+end
+
+def show_students
+  print_header
+  print_body(sort_students_by_cohort)
+  print_footer
 end
 
 # validation
