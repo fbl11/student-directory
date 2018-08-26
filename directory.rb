@@ -3,7 +3,6 @@
 @name = "placeholder"
 @cohort = :default_month
 @age = 0
-@sorted_by_cohort = []
 
 # saving and loading
 def try_load_students
@@ -22,8 +21,8 @@ end
 def load_students(filename = 'students.csv') # takes file name as an argument, providing a default name if none is given
   file = File.open(filename, 'r') # opens file with name from argument (default or provided by user)
   file.readlines.each do |line|
-    @name, @cohort, @age = line.chop.split(',')
-    create_student_list
+    name, cohort, age = line.chop.split(',')
+    add_student_to_list(name, cohort, age)
   end
   file.close
 end
@@ -55,9 +54,9 @@ def print_menu
 end
 
 def print_header
-  if @students.length > 0 
+  if @students.length > 0
     puts 'The students of Villains Academy'
-    puts '-------------' 
+    puts '-------------'
   end
 end
 
@@ -68,13 +67,7 @@ def print_footer
 end
 
 def print_students_list
-  if @students.length > 2
-    sort_students_by_cohort
-  end
-  @students.length > 2 ? 
-  @print_body.call(@sorted_by_cohort)
-  : @print_body.call(@students)
-  
+  print_body(sort_students_by_cohort)
 end
 
 def print_current_number
@@ -107,11 +100,15 @@ def process(selection)
   end
 end
 
-def create_student_list
-  @students << {name: @name, cohort: @cohort.to_sym, age: @age}
+def add_student_to_list(name, cohort='default_month', age)
+  @students << {name: name, cohort: cohort.to_sym, age: age}
 end
 
-@print_body = -> (list) { list.each.with_index { |student, index| puts "#{index + 1}. #{student[:name]}, age: #{student[:age]} (#{student[:cohort]} cohort)" }}
+def print_body(list)
+  list.each.with_index do |student, index|
+    puts "#{index + 1}. #{student[:name]}, age: #{student[:age]} (#{student[:cohort]} cohort)"
+  end
+end
 
 def input_students
   while !@name.empty? do
@@ -129,36 +126,30 @@ def input_students
         end
       break if validate_cohort(@cohort) == :valid
     end
-   
+
     loop do
       puts 'Please enter the student\'s age'
       @age = STDIN.gets.chomp
 
     break if validate_age(@age) == :valid
     end
-   
-    create_student_list
+
+    add_student_to_list(@name, @cohort, @age)
     print_current_number
   end
     @students
 end
 
 def sort_students_by_cohort
-  cohort_values = @students.map {|student_entry| student_entry.values[1]}.uniq
-
-  cohort_values.each do |month|
-    @students.each.with_index do |student, index|
-      if student[:cohort] == month
-        @sorted_by_cohort << {name: student[:name], age: student[:age], cohort: student[:cohort]}
-      end 
-    end
+  @students.sort_by do |student|
+    student[:cohort]
   end
 end
 
 # validation
 def validate_cohort(month)
   months = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december, :default_month]
-  
+
   !(months.include?(month)) ? :invalid : :valid
 end
 
