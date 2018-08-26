@@ -13,7 +13,7 @@ class Student
   end
 
   def csv_data
-    "#{name},#{age},#{cohort}"
+    "#{name},#{cohort},#{age}"
   end
 
   # def to_s
