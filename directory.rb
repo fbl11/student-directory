@@ -48,12 +48,20 @@ def load_students(filename = 'students.csv') # takes file name as an argument, p
 end
 
 def save_students
-  saved_students = File.open('students.csv', 'w')
+  filename = get_filename
+  saved_students = File.open(filename, 'w')
   @students.each do |student|
     saved_students.puts student.csv_data
   end
   saved_students.close
-  puts "Saved #{@students.count} students to students.csv"
+  puts "Saved #{@students.count} students to #{filename}"
+end
+
+def get_filename
+  puts "Please enter name for the file.  Return uses students.csv."
+  filename = STDIN.gets.chomp.downcase
+  filename = 'students.csv' if filename == ''
+  filename
 end
 
 def interactive_menu
@@ -67,7 +75,7 @@ end
 def print_menu
   puts '1. Input students'
   puts '2. Show students'
-  puts '3. Save students to students.csv'
+  puts '3. Save students'
   puts '4. Load students from students.csv'
   puts '9. Exit'
 end
@@ -98,7 +106,7 @@ def print_body(list)
 end
 
 def print_confirmation(selection)
-  puts "\n\nYou have selected to #{selection}\n\n"
+  puts "\nYou have selected to #{selection}\n\n"
 end
 
 # actions
