@@ -53,6 +53,7 @@ def save_students
     saved_students.puts student.csv_data
   end
   saved_students.close
+  puts "Saved #{@students.count} students to students.csv"
 end
 
 def interactive_menu
@@ -96,18 +97,27 @@ def print_body(list)
   end
 end
 
+def print_confirmation(selection)
+  puts "\n\nYou have selected to #{selection}\n\n"
+end
+
 # actions
 def process(selection)
   case selection
   when "1"
+    print_confirmation("input students")
     input_students
   when "2"
+    print_confirmation("show students")
     show_students
   when "3"
+    print_confirmation("save students")
     save_students
   when "4"
+    print_confirmation("load students")
     load_students
   when "9"
+    print_confirmation("exit the program")
     exit
   else
     puts "I don't know this option. Please try again."
