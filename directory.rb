@@ -37,8 +37,8 @@ def try_load_students
   end
 end
 
-def load_students(filename = 'students.csv') # takes file name as an argument, providing a default name if none is given
-  file = File.open(filename, 'r') # opens file with name from argument (default or provided by user)
+def load_students(filename = get_filename)
+  file = File.open(filename, 'r')
   file.readlines.each do |line|
     name, cohort, age = line.chop.split(',')
     add_student_to_list(name, cohort, age)
