@@ -1,3 +1,5 @@
+require 'csv'
+
 class Student
 
   attr_reader :name, :cohort, :age
@@ -13,7 +15,7 @@ class Student
   end
 
   def csv_data
-    "#{name},#{cohort},#{age}"
+    [name, cohort, age]
   end
 
   # def to_s
@@ -21,10 +23,12 @@ class Student
   # end
 end
 
-# shared variables
+# instance variables
 @students = []
 
 # saving and loading
+
+# allow user to pass file name on start of program, using default file if no argument given
 def try_load_students
   filename = ARGV.first
   if filename.nil?
@@ -38,44 +42,25 @@ def try_load_students
 end
 
 def load_students(filename = get_filename)
-  open(filename, 'r') do |file|
-    file.readlines.each do |line|
-      name, cohort, age = line.chop.split(',')
-      add_student_to_list(name, cohort, age)
-     end 
+  # each row represents an array made up of the words found in one line of the csv file 
+  CSV.foreach(filename) do |row|
+    # takes the word at index 0, 1, and 2 of our 'row-array' and passes them as parameters to function
+    add_student_to_list(row[0], row[1], row[2])
   end
-  puts "Loaded #{@students.count} students from #{filename}"
+  puts "\nLoaded #{@students.count} students from #{filename}"
 end
-
-# def load_students(filename = get_filename)
-#   file = File.open(filename, 'r')
-#   file.readlines.each do |line|
-#     name, cohort, age = line.chop.split(',')
-#     add_student_to_list(name, cohort, age)
-#   end
-#   file.close
-#   puts "Loaded #{@students.count} students from #{filename}"
-# end
 
 def save_students
   filename = get_filename
-  open(filename, 'w') do |file|
+  
+  CSV.open(filename, 'w') do |file|
     @students.each do |student|
-      file.puts student.csv_data
+      # pushes student information saved in an array to file - needs to be array!
+    file << student.csv_data
     end
   end
   puts "Saved #{@students.count} students to #{filename}"
 end
-
-# def save_students
-#   filename = get_filename
-#   saved_students = File.open(filename, 'w')
-#   @students.each do |student|
-#     saved_students.puts student.csv_data
-#   end
-#   saved_students.close
-#   puts "Saved #{@students.count} students to #{filename}"
-# end
 
 def get_filename
   puts "Please enter name for the file.  Return uses students.csv."
@@ -215,3 +200,26 @@ end
 
 try_load_students
 interactive_menu
+
+
+# replaced by methods working with CSV files directly - Ruby library 'csv'
+
+# def load_students(filename = get_filename)
+#   open(filename, 'r') do |file|
+#     file.readlines.each do |line|
+#       name, cohort, age = line.chop.split(',')
+#       add_student_to_list(name, cohort, age)
+#     end 
+#   end
+#   puts "Loaded #{@students.count} students from #{filename}"
+# end
+
+# def save_students
+#   filename = get_filename
+#   open(filename, 'w') do |file|
+#     @students.each do |student|
+#       file.puts student.csv_data
+#     end
+#   end
+#   puts "Saved #{@students.count} students to #{filename}"
+# end
